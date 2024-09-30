@@ -34,6 +34,12 @@ jobs:
         format: 'table'
         exit-code: '1' 
         severity: 'CRITICAL,HIGH'
+    
+    - name: Scan Dockerfile for vulnerabilities
+      uses: hadolint/hadolint-action@v2.1.0
+      with:
+        dockerfile: Dockerfile
+        fail-on: warning
 
     - name: Install cosign
       uses: sigstore/cosign-installer@main
@@ -45,7 +51,7 @@ jobs:
       uses: anchore/scan-action@v3
       with:
         image: docker.io/jamoos/python-weather-app:latest 
-        fail-on-severity: 'high' 
+        fail-on-severity: 'critical' 
 
     - name: Sign the Docker image
       run: |

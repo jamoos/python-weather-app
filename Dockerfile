@@ -1,4 +1,4 @@
-FROM python:3.8-slim-bullseye
+FROM python:slim
 RUN apt-get update && apt-get upgrade -y --no-install-recommends \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*

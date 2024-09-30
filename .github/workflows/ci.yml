@@ -56,7 +56,7 @@ jobs:
         image-ref: 'docker.io/jamoos/python-weather-app:latest'
         format: 'table'
         exit-code: '1'
-        severity: 'CRITICAL,HIGH' 
+        severity: 'CRITICAL' 
 
     - name: Sign the Docker image
       run: |

@@ -50,14 +50,13 @@ jobs:
     - name: Build the Docker image
       run: docker build -t docker.io/jamoos/python-weather-app:latest .
 
-    - name: Build and scan Docker image
-      uses: anchore/scan-action@v3
+    - name: Scan the Docker image with Trivy
+      uses: aquasecurity/trivy-action@master
       with:
-        image: docker.io/jamoos/python-weather-app:latest 
-    - name: upload Anchore scan SARIF report
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
+        image-ref: 'docker.io/jamoos/python-weather-app:latest'
+        format: 'table'
+        exit-code: '1'
+        severity: 'CRITICAL,HIGH' 
 
     - name: Sign the Docker image
       run: |

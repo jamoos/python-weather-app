@@ -51,7 +51,8 @@ jobs:
       uses: anchore/scan-action@v3
       with:
         image: docker.io/jamoos/python-weather-app:latest 
-        fail-on-severity: 'critical' 
+        fail-build: true
+        severity-cutoff: critical
 
     - name: Sign the Docker image
       run: |

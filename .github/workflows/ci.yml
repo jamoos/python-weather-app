@@ -47,6 +47,9 @@ jobs:
     - name: Generate key pair
       run: cosign generate-key-pair
 
+    - name: Build the Docker image
+      run: docker build -t docker.io/jamoos/python-weather-app:latest .
+
     - name: Build and scan Docker image
       uses: anchore/scan-action@v3
       with:

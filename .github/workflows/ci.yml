@@ -25,7 +25,7 @@ jobs:
         pip install pylint
 
     - name: Static code analysis with pylint
-      run: pylint weather_app.py
+      run: pylint weatherutils.py main.py
 
     - name: Scan dependencies for vulnerabilities
       uses: aquasecurity/trivy-action@master

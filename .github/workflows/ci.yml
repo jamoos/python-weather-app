@@ -59,8 +59,9 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build the Docker image
-      run: docker build -t docker.io/jamoos/python-weather-app:latest .
-
+      run: |
+        docker build -t docker.io/jamoos/python-weather-app:latest .
+        docker push docker.io/jamoos/python-weather-app:latest
     - name: Sign the Docker image
       run: |
         cosign sign --key cosign.key docker.io/jamoos/python-weather-app:latest
@@ -71,7 +72,7 @@ jobs:
         name: public-key
         path: cosign.pub
 
-    - name: Push Docker image (Optional)
-      if: github.ref == 'refs/heads/main' 
-      run: |
-        docker push docker.io/jamoos/python-weather-app:latest
+    # - name: Push Docker image (Optional)
+    #   if: github.ref == 'refs/heads/main' 
+    #   run: |
+    #     docker push docker.io/jamoos/python-weather-app:latest

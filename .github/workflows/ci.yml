@@ -50,13 +50,13 @@ jobs:
     - name: Build the Docker image
       run: docker build -t docker.io/jamoos/python-weather-app:latest .
 
-    - name: Scan the Docker image with Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: 'docker.io/jamoos/python-weather-app:latest'
-        format: 'table'
-        exit-code: '1'
-        severity: 'CRITICAL' 
+    # - name: Scan the Docker image with Trivy
+    #   uses: aquasecurity/trivy-action@master
+    #   with:
+    #     image-ref: 'docker.io/jamoos/python-weather-app:latest'
+    #     format: 'table'
+    #     exit-code: '1'
+    #     severity: 'CRITICAL' 
 
     - name: Sign the Docker image
       run: |

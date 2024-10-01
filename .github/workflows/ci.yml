@@ -70,4 +70,4 @@ jobs:
     - name: Sign the Docker image (keyless)
       if: github.ref == 'refs/heads/main'
       run: |
-        cosign sign -a "gitlab-oidc-token=$GITLAB_OIDC_TOKEN" docker.io/jamoos/python-weather-app@${{ steps.digest.outputs.digest }}
+        cosign sign docker.io/jamoos/python-weather-app@${{ steps.digest.outputs.digest }}

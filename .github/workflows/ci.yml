@@ -11,69 +11,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install bandit
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install bandit
 
-    - name: Static code analysis with bandit
-      run: |
-        bandit -r . -f json -o bandit-results.json | true
-    - name: Upload Bandit report
-      uses: actions/upload-artifact@v3
-      with:
-        name: bandit-report
-        path: bandit-results.json
-    
-    - name: Scan dependencies for vulnerabilities
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        format: 'table'
-        exit-code: '1' 
-        severity: 'CRITICAL,HIGH'
-    
-    - name: Scan Dockerfile for vulnerabilities
-      uses: hadolint/hadolint-action@v2.1.0
-      with:
-        dockerfile: Dockerfile
-        fail-on: warning
+      - name: Static code analysis with bandit
+        run: |
+          bandit -r . -f json -o bandit-results.json || true 
 
-    - name: Install cosign
-      uses: sigstore/cosign-installer@main
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-report
+          path: bandit-results.json
 
-    - name: Generate key pair
-      run: cosign generate-key-pair
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Scan dependencies for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '1' 
+          severity: 'CRITICAL,HIGH'
 
-    - name: Build the Docker image
-      run: |
-        COMMIT_SHA=$(git rev-parse --short HEAD)
-        docker build -t docker.io/jamoos/python-weather-app:$COMMIT_SHA .
-        docker push docker.io/jamoos/python-weather-app:$COMMIT_SHA
-    - name: Sign the Docker image
-      run: |
-        echo "y" | cosign sign --key cosign.key docker.io/jamoos/python-weather-app:$COMMIT_SHA
+      - name: Scan Dockerfile for vulnerabilities
+        uses: hadolint/hadolint-action@v2.1.0
+        with:
+          dockerfile: Dockerfile
+          fail-on: warning
 
-    - name: Upload public key as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: public-key
-        path: cosign.pub
+      - name: Install cosign
+        uses: sigstore/cosign-installer@main
 
-    # - name: Push Docker image (Optional)
-    #   if: github.ref == 'refs/heads/main' 
-    #   run: |
-    #     docker push docker.io/jamoos/python-weather-app:latest
+      - name: Build and tag the Docker image
+        run: docker build -t docker.io/jamoos/python-weather-app:latest .
+
+      - name: Push Docker image
+        if: github.ref == 'refs/heads/main' 
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push docker.io/jamoos/python-weather-app:latest
+
+      - name: Get image digest
+        id: digest
+        run: |
+          echo "digest=$(docker images --digests docker.io/jamoos/python-weather-app:latest | awk '{ print $3 }')" >> $GITHUB_OUTPUT
+
+      - name: Sign the Docker image (keyless)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "y" | cosign sign -a GITLAB_OIDC_TOKEN docker.io/jamoos/python-weather-app@${{ steps.digest.outputs.digest }}

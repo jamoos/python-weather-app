@@ -55,8 +55,8 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKE_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build the Docker image
       run: docker build -t docker.io/jamoos/python-weather-app:latest .

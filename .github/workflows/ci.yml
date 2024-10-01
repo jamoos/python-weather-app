@@ -63,11 +63,7 @@ jobs:
         # COMMIT_SHA=$(git rev-parse --short HEAD)
         docker build -t docker.io/jamoos/python-weather-app:latest .
         docker push docker.io/jamoos/python-weather-app:latest
-    - name: Get image digest
-      id: digest
-      run: |
-        echo "digest=$(docker images --digests docker.io/jamoos/python-weather-app:latest | awk '{ print $3 }')" >> $GITHUB_OUTPUT
     - name: Sign the Docker image (keyless)
       if: github.ref == 'refs/heads/main'
       run: |
-        cosign sign docker.io/jamoos/python-weather-app@${{ steps.digest.outputs.digest }}
+        cosign sign docker.io/jamoos/python-weather-app@$(docker images --digests docker.io/jamoos/python-weather-app:latest | awk '{ print $3 }')

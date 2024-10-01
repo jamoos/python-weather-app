@@ -22,10 +22,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pylint
+        pip install bandit
 
-    - name: Static code analysis with pylint
-      run: pylint --fail-under=5 weatherutils.py main.py
+    - name: Static code analysis with bandit
+      run: bandit -r .
 
     - name: Scan dependencies for vulnerabilities
       uses: aquasecurity/trivy-action@master
@@ -46,21 +46,17 @@ jobs:
 
     - name: Generate key pair
       run: cosign generate-key-pair
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build the Docker image
       run: docker build -t docker.io/jamoos/python-weather-app:latest .
 
-    # - name: Scan the Docker image with Trivy
-    #   uses: aquasecurity/trivy-action@master
-    #   with:
-    #     image-ref: 'docker.io/jamoos/python-weather-app:latest'
-    #     format: 'table'
-    #     exit-code: '1'
-    #     severity: 'CRITICAL' 
-
     - name: Sign the Docker image
       run: |
-        # echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
         cosign sign -key cosign.key docker.io/jamoos/python-weather-app:latest
 
     - name: Upload public key as artifact
@@ -72,5 +68,4 @@ jobs:
     - name: Push Docker image (Optional)
       if: github.ref == 'refs/heads/main' 
       run: |
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
         docker push docker.io/jamoos/python-weather-app:latest

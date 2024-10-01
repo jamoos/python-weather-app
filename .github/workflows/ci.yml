@@ -60,11 +60,12 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build -t docker.io/jamoos/python-weather-app:latest .
-        docker push docker.io/jamoos/python-weather-app:latest
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        docker build -t docker.io/jamoos/python-weather-app:$COMMIT_SHA .
+        docker push docker.io/jamoos/python-weather-app:$COMMIT_SHA
     - name: Sign the Docker image
       run: |
-        cosign sign --key cosign.key docker.io/jamoos/python-weather-app:latest
+        cosign sign --key cosign.key docker.io/jamoos/python-weather-app:$COMMIT_SHA
 
     - name: Upload public key as artifact
       uses: actions/upload-artifact@v3

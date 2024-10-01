@@ -25,8 +25,15 @@ jobs:
         pip install bandit
 
     - name: Static code analysis with bandit
-      run: bandit -r .
+      run: |
+        bandit -r . -f json -o bandit-results.json 
 
+    - name: Upload Bandit report
+      uses: actions/upload-artifact@v3
+      with:
+        name: bandit-report
+        path: bandit-results.json
+    
     - name: Scan dependencies for vulnerabilities
       uses: aquasecurity/trivy-action@master
       with:
@@ -57,7 +64,7 @@ jobs:
 
     - name: Sign the Docker image
       run: |
-        cosign sign -key cosign.key docker.io/jamoos/python-weather-app:latest
+        cosign sign --key cosign.key docker.io/jamoos/python-weather-app:latest
 
     - name: Upload public key as artifact
       uses: actions/upload-artifact@v3

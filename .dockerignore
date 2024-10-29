@@ -1,6 +1,0 @@
-# .dockerignore
-*
-!main.py
-!boot.html
-!weatherutils.py
-!requirements.txt

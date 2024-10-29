@@ -56,7 +56,7 @@
     </header>
  
     <main class="container mb-5">
-        <p>color is: {{ BG_COLOR }}</p>
+        
         <form onsubmit="goToPage(event)" class="mb-4">
             <div class="d-flex justify-content-center">
                 <input class="form-control" id="locationfield" placeholder="{{ forecast.location.address if forecast and forecast.location and forecast.location.address else 'Location...' }}">
@@ -146,6 +146,7 @@
                 <input class="form-check-input" type="checkbox" id="darkModeSwitch">
                 <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
             </div>
+            <p>color is: {{ BG_COLOR }}</p>
             <p class="mt-2 mb-0">&copy; 2024 LK. All rights reserved.</p>
         </div>
     </footer>

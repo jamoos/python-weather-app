@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest,${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:$BUMPED_VERSION
+          tags: ${{ secrets.DOCKER_USERNAME }}/kweather:latest,${{ secrets.DOCKER_USERNAME }}/kweather:$BUMPED_VERSION
 
       - name: Commit updated Chart.yaml
         run: |

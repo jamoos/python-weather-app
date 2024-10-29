@@ -8,7 +8,7 @@ image:
   repository: jamoos/kweather
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "history"
+  # tag: "history"
 
 imagePullSecrets:
   - name: dockhub

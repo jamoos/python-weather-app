@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kweather-bg-color-green
+data:
+  BG_COLOR: "green" 
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kweather-bg-color-blue
+data:
+  BG_COLOR: "blue"

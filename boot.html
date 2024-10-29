@@ -35,9 +35,18 @@
             margin: 0 auto;
             display: block;
         }
+        /* body { */
+        /*     background-color: {{ BG_COLOR }}; */
+        /* } */
+        [data-bs-theme="dark"] {
+            --bs-body-bg: dark{{ BG_COLOR }}
+        }
+        [data-bs-theme="light"] {
+            --bs-body-bg: {{ BG_COLOR }}
+        }
     </style>
 </head>
-<body>
+  <body >
     <header class="mb-4">
       <a href="/">
         <svg id="logo" viewBox="0 0 500 100" xmlns="http://www.w3.org/2000/svg">
@@ -47,6 +56,7 @@
     </header>
  
     <main class="container mb-5">
+        <p>color is: {{ BG_COLOR }}</p>
         <form onsubmit="goToPage(event)" class="mb-4">
             <div class="d-flex justify-content-center">
                 <input class="form-control" id="locationfield" placeholder="{{ forecast.location.address if forecast and forecast.location and forecast.location.address else 'Location...' }}">

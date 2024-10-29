@@ -4,9 +4,14 @@ from geopy.exc import GeopyError
 from groq import Groq
 import logging
 import ecs_logging
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+# remove dot
 handler = logging.FileHandler("./logs/kweather-log.json")
 handler.setFormatter(ecs_logging.StdlibFormatter())
 logger.addHandler(handler)
@@ -87,7 +92,7 @@ class MeteoWeather:
 
 
 class GroqJoke:
-    client = Groq(api_key="")
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
     def __init__(self, forecast):
         self.joke = ""

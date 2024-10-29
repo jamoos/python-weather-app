@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search History</title>
+</head>
+<body>
+    <h1>Search History</h1>
+    <ul>
+        {% for file in files %}
+          <li><a href="{{ url_for('static', filename=file) }}" download>{{ file }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

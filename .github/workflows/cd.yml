@@ -20,7 +20,7 @@ jobs:
           VERSION=$(grep 'appVersion:' kweather-chart/Chart.yaml | awk '{print $2}')
           BUMPED_VERSION=$(echo "$VERSION" | awk -F. '{print $1"."$2"."($3+1)}')\"
           sed -i "s/appVersion: $VERSION/appVersion: $BUMPED_VERSION/g" kweather-chart/Chart.yaml
-          echo "BUMPED_VERSION=$BUMPED_VERSION" >> $GITHUB_OUTPUT
+          echo "BUMPED_VERSION=$(echo "$BUMPED_VERSION" | tr -d '"')" >> $GITHUB_OUTPUT
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3

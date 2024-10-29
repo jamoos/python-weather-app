@@ -11,6 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Bump Chart.yaml patch version
+        run: |
+          VERSION=$(grep 'appVersion:' kweather-chart/Chart.yaml | awk '{print $2}')
+          BUMPED_VERSION=$(echo "$VERSION" | awk -F. '{print $1"."$2"."($3+1)}')\"
+          sed -i "s/appVersion: $VERSION/appVersion: $BUMPED_VERSION/g" kweather-chart/Chart.yaml
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -21,4 +30,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: jamoos/kweather:github
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest,${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:$(yq '.appVersion' kweather-chart/Chart.yaml)
+
+      - name: Commit updated Chart.yaml
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -am "Bump Chart.yaml appVersion to $BUMPED_VERSION [skip-ci]"
+          git push

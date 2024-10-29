@@ -7,7 +7,7 @@ import ecs_logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler("/logs/kweather-log.json")
+handler = logging.FileHandler("./logs/kweather-log.json")
 handler.setFormatter(ecs_logging.StdlibFormatter())
 logger.addHandler(handler)
 
